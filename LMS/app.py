@@ -14,7 +14,10 @@ from LMS.common import Session
 
 app = Flask(__name__)
 app.secret_key = '1215464'
-# 세션을 사용하기 위해 보안키 설정 (아무 문자열이나 입력
+# 세션을 사용하기 위해 보안키 설정 (아무 문자열이나 입력)
+# RuntimeError: The session is unavailable because no secret key was set.
+# Set the secret_key on the application to something unique and secret.
+
 #
 @app.route('/login', methods=['GET','POST']) # http://localhost:5000/login
         # methods는 웹에 동작을 관여한다.
