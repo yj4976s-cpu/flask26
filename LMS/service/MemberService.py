@@ -57,7 +57,7 @@ class MemberService:
                 else:
                     print("아이디 또는 비밀번호가 틀렸습니다.")
         except : # 예외발생 문구
-            print("MemberServie.login()메서드 오류발생....")
+            print("MemberService.login()메서드 오류발생....")
         finally:
             conn.close()
 
