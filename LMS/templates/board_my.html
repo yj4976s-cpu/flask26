@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+
+    .post-item {
+        text-decoration: none !important;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+        background-color: #fff;
+    }
+
+    .post-item:hover {
+        background-color: #f1f5f9;
+        border-left: 4px solid #1e3a8a;
+        transform: translateX(5px);
+    }
+
+    .post-title {
+        color: #334155;
+        font-size: 1.05rem;
+    }
+
+    .post-badge {
+        font-size: 0.75rem;
+        padding: 0.4em 0.8em;
+        background-color: #e2e8f0;
+        color: #475569;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header border-0 py-3" style="background-color: #1e3a8a;">
+            <div class="d-flex align-items-center">
+                <span class="fs-4 me-2">📝</span>
+                <h5 class="mb-0 text-white fw-bold">내가 작성한 게시글</h5>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            {% if boards %}
+            <div class="list-group list-group-flush">
+                {% for board in boards %}
+                <a href="{{ url_for('board_view', board_id=board.id) }}"
+                   class="list-group-item post-item d-flex justify-content-between align-items-center px-4 py-3">
+
+                    <div class="d-flex align-items-center">
+                        <span class="badge rounded-pill post-badge me-3 text-uppercase">Notice</span>
+                        <span class="fw-bold post-title">{{ board.title }}</span>
+                    </div>
+
+                    <div class="text-end d-none d-sm-block">
+                            <span class="text-primary small fw-bold">
+                                읽어보기 <i class="ms-1">→</i>
+                            </span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="display-1 text-light mb-3">Empty</div>
+                <p class="text-muted">아직 작성한 게시글이 없습니다.</p>
+                <a href="/board" class="btn btn-primary btn-sm rounded-pill px-4">글 쓰러 가기</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

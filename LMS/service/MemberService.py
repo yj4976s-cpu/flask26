@@ -99,6 +99,7 @@ class MemberService:
                 cursor.execute(insert_sql, (uid, pw, name))
                 conn.commit()
                 print("회원가입 완료! 로그인해 주세요.")
+
         except Exception as e:
             conn.rollback()
             # 트랜젝션 : with안쪽에 2개이상의 sql문이 둘다 true일때는 commit()
@@ -112,7 +113,6 @@ class MemberService:
         if not Session.is_login():
             print("로그인 후 이용 가능합니다.")
             return
-
 
         member = Session.login_member
         print(f"내정보확인 : {member}") # Member.__str__()

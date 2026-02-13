@@ -4,63 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>종합 관리 시스템</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { padding-top: 70px; } /* 네비바에 가려지지 않게 설정 */
+        body {
+            padding-top: 80px;
+            font-family: "Pretendard", sans-serif;
+            background-color: #fcfcfc;
+        }
+        /* 네비게이션 바 커스텀 컬러
+       <style>
+  body {
+    padding-top: 80px;
+    font-family: "Pretendard", sans-serif;
+    background-color: #f6f7fb;
+  }
+
+  /* 화이트 네비 + 고급스러운 그림자 */
+  .navbar-custom{
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+  }
+
+  /* 글자색: 검정 계열 */
+  .navbar-custom .navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #111827 !important;
+  }
+
+  .navbar-custom .nav-link {
+    font-weight: 600;
+    color: #374151 !important;
+    transition: 0.2s;
+  }
+
+  .navbar-custom .nav-link:hover {
+    color: #2563eb !important;
+  }
+
+  /* 드롭다운도 밝게 */
+  .dropdown-menu {
+    border-radius: 14px;
+  }
+
+  /* 사용자 정보 pill: 옅은 파랑 */
+  .user-info{
+    background: rgba(37,99,235,.10);
+    color: #1d4ed8;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* 버튼 컬러도 맞추기 */
+  .btn-outline-light{
+    border-color: rgba(37,99,235,.35) !important;
+    color: #2563eb !important;
+    background: transparent !important;
+  }
+  .btn-outline-light:hover{
+    background: rgba(37,99,235,.10) !important;
+  }
+
+  .btn-light{
+    background: #2563eb !important;
+    color: #fff !important;
+    border: none !important;
+  }
+
+        }
+        .navbar-brand { font-weight: 800; letter-spacing: -0.5px; }
+        .nav-link { font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { opacity: 0.8; }
+
+        /* 사용자 정보 표시 스타일 */
+        .user-info {
+            background: rgba(255,255,255,0.15);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+body {
+    background-color: #f8f9fa;
+}
+
+
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/">MBC 시스템</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/board">자유게시판</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/filesboard">자료실(파일게시판)</a>
+                        <a class="nav-link" href="/filesboard">자료실</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="scoreDropdown" role="button" data-bs-toggle="dropdown">
                             성적관리
                         </a>
-                        <ul class="dropdown-menu shadow">
-                            {# 1. user 권한으로 로그인 사용자가 볼 수 있는 메뉴 #}
-                            {% if session.get('user_role') == 'user' %}
+                        <ul class="dropdown-menu shadow border-0">
+                            {% if session.get('user_role')=='user' %}
                                 <li><a class="dropdown-item" href="/score/my">내 성적 조회</a></li>
                             {% endif %}
 
-                            {# 2. 관리자/매니저만 볼 수 있는 메뉴 #}
                             {% if session.get('user_role') in ('admin', 'manager') %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><h6 class="dropdown-header">관리자 메뉴</h6></li>
-                                <li><a class="dropdown-item" href="/score/members">학생 성적 입력 (학생선택)</a></li>
-                                <li><a class="dropdown-item" href="/score/list">전체 성적 현황 (JOIN)</a></li>
+                                <li><a class="dropdown-item" href="/score/members">학생 성적 입력</a></li>
+                                <li><a class="dropdown-item" href="/score/list">전체 성적 현황</a></li>
                             {% endif %}
                         </ul>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
+
+                <ul class="navbar-nav align-items-center">
                     {% if session.get('user_id') %}
                         <li class="nav-item">
-                            <span class="nav-link text-white"><b>{{ session['user_name'] }}|{{ session['user_role']}}</b>님</span>
+                            <span class="nav-link text-white me-3">
+                                <span class="user-info">
+                                    <b>{{ session['user_name'] }}</b> ({{ session['user_role']}})
+                                </span>
+                            </span>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/mypage">마이페이지</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">로그아웃</a>
+                            <a class="btn btn-sm btn-outline-light ms-2" href="/logout">로그아웃</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="/login">로그인</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/join">회원가입</a>
+                            <a class="btn btn-sm btn-dark ms-2 fw-bold join-btn" href="/join">회원가입</a>
+
                         </li>
                     {% endif %}
                 </ul>
@@ -68,8 +158,7 @@
         </div>
     </nav>
 
-    <div class="container">
-        <!--  본문영역으로 다른파일이 이 레이아웃을 겹쳐보이게 처리하는 용도-->
+    <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
 

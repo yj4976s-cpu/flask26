@@ -5,4 +5,4 @@ from LMS.service.PostService import PostService
 #    최상위       파일명(모듈)          클래스명
 
 # 다른 패키지에서 import *로 처리 가능
-__all__ = ['MemberService', 'ScoreService', 'BoardService','PostService']
+__all__ = ['MemberService', 'ScoreService', 'BoardService', 'PostService']

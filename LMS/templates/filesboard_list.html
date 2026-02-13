@@ -1,43 +1,128 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <div class="mt-4">
+
+    <!-- 상단 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3><i class="bi bi-folder2-open"></i> 자료실</h3>
-        <a href="/filesboard/write" class="btn btn-primary"><i class="bi bi-pencil"></i> 자료 등록</a>
+
+        <h3 class="fw-bold">
+            <i class="bi bi-folder2-open me-2"></i>자료실
+        </h3>
+
+        <a href="/filesboard/write" class="btn btn-dark px-4">
+            <i class="bi bi-pencil me-1"></i>자료 등록
+        </a>
+
     </div>
 
-    <table class="table table-hover text-center shadow-sm">
-        <thead class="table-info">
-            <tr>
-                <th style="width: 8%">번호</th>
-                <th style="width: 50%">제목</th>
-                <th style="width: 15%">작성자</th>
-                <th style="width: 17%">등록일</th>
-                <th style="width: 10%">조회</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in posts %}
-            <tr>
-                <td>{{ p.id }}</td>
-                <td class="text-start ps-4">
-                    <a href="/filesboard/view/{{ p.id }}" class="text-decoration-none text-dark fw-bold">
-                        {{ p.title }}
-                        {% if p.file_count > 0 %}
-                            <i class="bi bi-paperclip text-primary ms-1"></i>
-                        {% endif %}
-                    </a>
-                </td>
-                <td>{{ p.writer_name }}</td>
-                <td class="small text-muted">{{ p.created_at.strftime('%Y-%m-%d') if p.created_at }}</td>
-                <td>{{ p.view_count }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5" class="py-5 text-muted">등록된 자료가 없습니다.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- 카드형 테이블 -->
+    <div class="card border-0 board-card">
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle text-center mb-0">
+
+                <thead class="board-header">
+                <tr>
+                    <th style="width:8%">번호</th>
+                    <th style="width:50%">제목</th>
+                    <th style="width:15%">작성자</th>
+                    <th style="width:17%">등록일</th>
+                    <th style="width:10%">조회</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for p in posts %}
+                <tr>
+                    <td class="text-muted">{{ p.id }}</td>
+
+                    <td class="text-start ps-4">
+                        <a href="/filesboard/view/{{ p.id }}"
+                           class="board-title">
+
+                            {{ p.title }}
+
+                            {% if p.file_count > 0 %}
+                            <i class="bi bi-paperclip text-secondary ms-1"></i>
+                            {% endif %}
+                        </a>
+                    </td>
+
+                    <td>{{ p.writer_name }}</td>
+
+                    <td class="small text-muted">
+                        {{ p.created_at.strftime('%Y-%m-%d') if p.created_at }}
+                    </td>
+
+                    <td>{{ p.view_count }}</td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="5" class="py-5 text-muted">
+                        등록된 자료가 없습니다.
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
 </div>
+
+<style>
+
+
+    .board-card .table tbody tr td {
+        background-color: #e5e7eb !important;   /* 진한 회색 */
+    }
+
+    /* hover 시 더 진하게 */
+    .board-card .table-hover tbody tr:hover td {
+        background-color: #d1d5db !important;
+    }
+
+
+
+    .board-card .table-hover tbody tr:hover td {
+      background-color: #e5e7eb !important;
+    }
+
+
+    /* 헤더 (기존 table-info 제거) */
+    .board-header {
+        background: #f3f4f6;
+    }
+
+    .board-header th {
+        font-weight: 600;
+        color: #374151;
+        border-bottom: none;
+    }
+
+    /* 제목 링크 */
+    .board-title {
+        text-decoration: none;
+        color: #111827;
+        font-weight: 500;
+    }
+
+    .board-title:hover {
+        color: #000;
+    }
+    .table tbody tr {
+        background-color: #f9fafb;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e5e7eb;
+    }
+
+
+</style>
+
 {% endblock %}

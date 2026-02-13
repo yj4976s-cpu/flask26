@@ -2,7 +2,7 @@
 # 현재 세션으로 상태관리를 하는데 차후에
 # 프론트를 배우면 웹브라우져에서 세션을 처리한다.
 # html + css + js : w3c라고 부른다. 웹표준!!!
-# 차후에는 이곳이 db관리하는 connetion 영역이 될 것이다.
+# 차후에는 이곳이 db관리하는 connection 영역이 될 것이다.
 
 # 파이참에도 db를 관리하는 메뉴가 있다.
 # 오른쪽 버튼에 db 선택함 -> mysql 워크벤치 대타용
@@ -20,10 +20,10 @@ class Session:
         print("get_connection()메서드 호출 - mysql에 접속됩니다.")
 
         return pymysql.connect(
-            host='192.168.0.171',
-            user='kkk',
+            host='localhost',
+            user='MBC',
             password='1234',  # 본인의 비밀번호로 변경
-            db='mbc',
+            db='lms',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
             # dict 타입으로 처리함 (딕셔너리타입 k : v )
@@ -52,3 +52,4 @@ class Session:
     def is_manager(cls):
         # 매니저이거나 어드민이면 참 (보통 어드민이 매니저 권한을 포함함)
         return cls.is_login() and cls.login_member.role in ("manager", "admin")
+

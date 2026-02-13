@@ -1,32 +1,101 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="row justify-content-center ">
+<div class="row justify-content-center">
     <div class="col-md-8">
-        <h2 class="mb-4">자유 게시판</h2>
-        <table class="table table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>날짜</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for b in boards %}
-                <tr>
-                    <td>{{ b.id }}</td>
-                    <td><a href="/board/view/{{ b.id }}" class="text-decoration-none text-dark">{{ b.title }}</a></td>
-                    <td>{{ b.writer_name }}</td>
-                    <td>{{ b.created_at.strftime('%Y-%m-%d') if b.created_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="text-end">
-            <a href="/board/write" class="btn btn-primary">글쓰기</a>
+
+        <h2 class="mb-4 fw-bold">자유 게시판</h2>
+
+        <div class="card border-0 board-card">
+            <div class="card-body p-0">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="board-header">
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>날짜</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for b in boards %}
+                    <tr>
+                        <td class="text-muted">{{ b.id }}</td>
+                        <td>
+                            <a href="/board/view/{{ b.id }}" class="board-title">
+                                {{ b.title }}
+                            </a>
+                        </td>
+                        <td>{{ b.writer_name }}</td>
+                        <td class="text-muted">
+                            {{ b.created_at.strftime('%Y-%m-%d') if b.created_at }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
         </div>
+
+        <div class="text-end mt-3">
+            <a href="/board/write" class="btn btn-dark px-4">글쓰기</a>
+        </div>
+
     </div>
 </div>
+
+<style>
+    .table tbody {
+        background-color: #f3f4f6;   /* soft gray */
+    }
+
+    .board-card .table tbody tr td {
+    background-color: #d1d5db; !important;
+    }
+
+
+    .board-card .table-hover tbody tr:hover td {
+      background-color: #e5e7eb !important;
+    }
+
+
+
+    .board-card {
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+
+    .board-header {
+        background: #f3f4f6;
+    }
+
+    .board-header th {
+        font-weight: 600;
+        color: #374151;
+        border-bottom: none;
+    }
+
+
+    .board-title {
+        text-decoration: none;
+        color: #111827;
+        font-weight: 500;
+    }
+
+    .board-title:hover {
+        color: #000;
+    }
+
+
+    .table-hover tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+</style>
 {% endblock %}
