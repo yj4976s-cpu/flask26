@@ -171,8 +171,59 @@ def mypage():
 
     finally:
         conn.close()
-#################################### 회원 CRUD END #################################################################
+@ app.route('/board/my')
+def board_my():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    conn = Session.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 나의  ID로만 조회
+            sql = "SELECT * FROM boards WHERE member_id = %s"
+            cursor.execute(sql, (session['user_id'],))
+            rows = cursor.fetchall()
+            print(rows) # dict 타입으로 결과물 들어옴
+            boards =  [Board.from_db(row) for row in rows]
 
+            return render_template('board_my.html', boards=boards)
+    finally:
+        conn.close()
+@app.route('/mypage/delete_account', methods=['POST'])
+def delete_account():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return "<script>alert('로그인이 필요합니다.'); history.back();</script>"
+
+    conn = Session.get_connection()
+    try:
+        with conn.cursor() as cursor:
+            print(f"--- 탈퇴 시도 ID: {user_id} (타입: {type(user_id)}) ---")
+            cursor.execute("DELETE FROM scores WHERE member_id = %s", (user_id,))
+            cursor.execute("DELETE FROM boards WHERE member_id = %s", (user_id,))
+            # 회원 삭제
+            sql = "DELETE FROM members WHERE id = %s"
+            cursor.execute(sql, (user_id,))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                session.clear()  # 세션 삭제 (로그아웃 처리)
+                return "<script>alert('탈퇴가 완료되었습니다.'); location.href='/';</script>"
+            else:
+                return "<script>alert('삭제할 회원이 없습니다.'); history.back();</script>"
+
+    except Exception as e:
+        print(f"탈퇴 에러: {e}")
+        error_msg = str(e).replace("'", "\\'")  # 따옴표 처리
+        return f"<script>alert('DB 에러 발생: {error_msg}'); history.back();</script>"
+
+        # return "탈퇴 중 오류가 발생했습니다."
+
+    finally:
+        conn.close()
+
+
+#################################### 회원 CRUD END #################################################################
 
 #################################### 게시판 CRUD ##################################################################
 
@@ -346,7 +397,6 @@ def add_score():
                                    target_uid=target_uid,
                                    target_name=target_name,
                                    score=existing_score)
-
     finally:
         conn.close()
 
@@ -402,6 +452,7 @@ def score_save():
 
         conn.commit()
         return f"<script>alert('{target_uid} 학생 성적 저장 완료!'); location.href='/score/list';</script>"
+
     finally:
         conn.close()
 
@@ -550,12 +601,55 @@ def download_file(filename):
     #   as_attachment=True 로 하면 파일 다운로드 창을 띄움
     #   저장할 파일명은 download_name=origin_name 로 지정
 
+@app.route('/filesboard/delete/<int:post_id>')
+def fileboard_delete(post_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    # 삭제 전 작성자 확인을 위해 정보를 조회
+    post, _ = PostService.get_post_detail(post_id)
+    # _는 return 값을 사용하지 않겠다라는 관례적 표현(_) 사용하지 않는 변수
+
+    if not post:
+        return "<script>alert('이미 삭제된 게시글읿니다.'); location.href='/filesboard';</script>"
+
+    # 본인확인(또는 관리자 권한)
+    if post['member_id'] != session['user_id'] and session.get('user_role') != 'admin':
+        return "<script>alert('삭제권한이 없습니다.'); history.back();</script>"
+
+    if PostService.delete_post(post_id):
+        return "<script>alert('성공적으로 삭제되었습니다.'); location.href='/filesboard';</script>"
+    else:
+        return "<script>alert('삭제 중 오류가 발생했습니다.'); history.back();</script>"
+
+# 다중파일 수정용
+@app.route('/filesboard/edit/<int:post_id>', methods=['GET', 'POST'])
+def fileboard_edit(post_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        files = request.files.getlist('files') # 다중 파일 가져오기
+
+        if PostService.update_post(post_id, title, content, files):
+            return f"<script>alert('수정되었습니다.'); location.href='/filesboard/view/{post_id}';</script>"
+        return "<script>alert('수정 실패'); history.back();</script>"
+
+    # GET 요청시 기존 데이터 로드
+    post, files = PostService.get_post_detail(post_id)
+    if post['member_id'] != session['user_id']:
+        return "<script>alert('권한이 없습니다.'; history.back();</script>"
+    return render_template('filesboard_edit.html', post=post, files=files)
+
 ###################################### 파일upload 게시판 end ################################################
 @app.route('/') # url 생성용 코드 http://localhost:5000/ or http://192.168.0.???:5000
 def index():
     return render_template('main.html')
     # render_template 웹브라우저로 보낼 파일명
     # templates 라는 폴더에서 main.html을 찾아 보냄
+
 
 if __name__ == '__main__':
 

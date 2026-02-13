@@ -1,85 +1,29 @@
 {% extends 'layout.html' %}
 {% block content %}
-
-<div class="container d-flex justify-content-center align-items-center" style="min-height:70vh;">
-
-    <div class="col-md-4">
-
-        <div class="card login-card border-0">
-
-            <div class="card-body p-5">
-
-                <h3 class="text-center fw-bold mb-4">로그인</h3>
-
-                <form action="/login" method="POST">
-
-                    <div class="mb-3">
-                        <label class="form-label">아이디</label>
-                        <input type="text" name="uid" class="form-control custom-input" required>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="text-center mb-4">로그인</h3>
+                        <form action="/login" method="POST">
+                        <!-- 하단에 submit버튼을 누르면 전송되는 메서드와 값 처리용  -->
+                            <div class="mb-3">
+                                <label class="form-label">아이디</label>
+                                <input type="text" name="uid" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">비밀번호</label>
+                                <input type="password" name="upw" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">로그인</button>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <a href="/join" class="text-decoration-none">회원가입 하러가기</a>
+                        </div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">비밀번호</label>
-                        <input type="password" name="upw" class="form-control custom-input" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-dark w-100 py-2 login-btn">
-                        로그인
-                    </button>
-
-                </form>
-
-                <div class="mt-4 text-center">
-                    <a href="/join" class="join-link">회원가입 하러가기</a>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-</div>
-
-<style>
-
-/* 카드 스타일 */
-.login-card {
-    border-radius: 18px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-}
-
-/* input 스타일 */
-.custom-input {
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-}
-
-.custom-input:focus {
-    border-color: #111827;
-    box-shadow: none;
-}
-
-/* 로그인 버튼 */
-.login-btn {
-    background: #111827;
-    border: none;
-}
-
-.login-btn:hover {
-    background: #000000;
-}
-
-/* 회원가입 링크 */
-.join-link {
-    color: #6b7280;
-    text-decoration: none;
-}
-
-.join-link:hover {
-    color: #111827;
-}
-
-</style>
-
 {% endblock %}

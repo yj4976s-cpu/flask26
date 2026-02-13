@@ -1,5 +1,5 @@
 class Board:
-    def __init__(self, id, title, content, member_id, active=True, writer_name=None, writer_uid=None,created_at=None):
+    def __init__(self, id, title, content, member_id, active=True, writer_name=None, writer_uid=None, created_at=None):
         self.id = id  # DB의 PK
         self.title = title
         self.content = content

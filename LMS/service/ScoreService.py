@@ -1,4 +1,4 @@
-
+import sqlite3
 
 from LMS.common import Session # 로그인한 member 객체, db객체
 from LMS.domain import Score # 성적 객체

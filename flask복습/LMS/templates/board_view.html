@@ -1,42 +1,86 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<style>
+    /* 제목 및 본문 폰트 디테일 */
+    .view-title {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #1e293b;
+    }
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h2 class="mb-4">게시글 상세보기</h2>
+    .info-bar {
+        font-size: 0.95rem;
+        color: #64748b;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 12px 20px;
+    }
 
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0">{{ board.title }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3 border-bottom pb-2">
-                        <div class="col-md-6">
-                            <strong>작성자:</strong> {{ board.writer_name }}
-                            <span class="text-muted">({{ board.writer_uid }})</span>
-                        </div>
-                        <div class="col-md-6 text-md-end">
-                            <strong>작성일:</strong>
+    .view-content {
+        line-height: 1.8; /* 줄간격을 넓혀서 가독성 향상 */
+        font-size: 1.1rem;
+        color: #334155;
+        min-height: 300px;
+        padding: 20px 5px;
+        white-space: pre-wrap; /* 줄바꿈 유지 */
+    }
+
+    .btn-custom {
+        border-radius: 10px;
+        padding: 10px 25px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-list { background-color: #e2e8f0; color: #475569; border: none; }
+    .btn-list:hover { background-color: #cbd5e1; }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">홈</a></li>
+                <li class="breadcrumb-item"><a href="/board" class="text-decoration-none text-muted">자유게시판</a></li>
+                <li class="breadcrumb-item active fw-bold text-primary">상세보기</li>
+            </ol>
+        </nav>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <h2 class="view-title mb-4">{{ board.title }}</h2>
+
+                <div class="info-bar d-flex flex-wrap justify-content-between align-items-center mb-4">
+                    <div>
+                        <span class="me-3"><strong>작성자</strong> <span class="text-dark fw-semibold ms-1">{{ board.writer_name }}</span></span>
+                        <span class="d-none d-sm-inline-block text-light-emphasis opacity-50">|</span>
+                        <span class="ms-0 ms-sm-3 text-muted small">{{ board.writer_uid }}</span>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <span class="badge bg-white text-muted border fw-normal px-3 py-2">
                             {{ board.created_at.strftime('%Y-%m-%d %H:%M') if board.created_at }}
-                        </div>
+                        </span>
                     </div>
+                </div>
 
-                    <div class="view-content mb-4">
-                        {{ board.content }}
-                    </div>
+                <div class="view-content border-bottom mb-5">
+                    {{ board.content }}
+                </div>
 
-                    <div class="text-center">
-                        <a href="/board" class="btn btn-secondary">목록으로</a>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="/board" class="btn btn-custom btn-list shadow-sm">
+                        <i class="me-1">←</i> 목록으로
+                    </a>
 
-
-                        <a href="/board/edit/{{ board.id }}" class="btn btn-warning">수정</a>
-                        <a href="/board/delete/{{ board.id }}" class="btn btn-danger"
+                    <div class="btn-group">
+                        <a href="/board/edit/{{ board.id }}" class="btn btn-custom btn-outline-warning me-2">수정하기</a>
+                        <a href="/board/delete/{{ board.id }}" class="btn btn-custom btn-danger shadow-sm"
                            onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
 {% endblock %}
