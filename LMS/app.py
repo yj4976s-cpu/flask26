@@ -481,12 +481,12 @@ def score_my():
 #################################### 파일게시판 CRUD ################################
 
 # 파일처리용 게시판은 특징
-# 1. 파일 업로드/다운로드가 가능!!!
-# 2. 단일파일 / 다중파일 업로드 처리
-# 3. 서비스 패키지를 활용
+## 1. 파일 업로드/다운로드가 가능!!!
+## 2. 단일파일 / 다중파일 업로드 처리
+## 3. 서비스 패키지를 활용
 ## 4. /upload라는 폴더를 사용하겠다. / 용량제한 16MB
-# 5. 파일명 중복 방지용코드 활용
-# 6. db에서 부모객체가 삭제되면 자식 객체도 삭제 되게 cascade 처리함!
+## 5. 파일명 중복 방지용코드 활용
+## 6. db에서 부모객체가 삭제되면 자식 객체도 삭제 되게 cascade 처리함!
 
 UPLOAD_FOLDER = 'uploads/'
 # 폴더가 없으면 자동 생성
@@ -516,6 +516,7 @@ def filesboard_write():
         content = request.form.get('content')
         # 핵심: getlist를 사용해야 리스트 형태로 가져옵니다.
         files = request.files.getlist('files')
+        # 파일 처리시 html에 필수 코드 : enctype = "multipart/form-data"
 
         if PostService.save_post(session['user_id'], title, content, files):
             return "<script>alert('게시글이 등록되었습니다.'); location.href='/filesboard';</script>"
@@ -553,6 +554,50 @@ def download_file(filename):
     #   return send_from_directory('uploads/', filename)는 브라우져에서 바로 열어버림
     #   as_attachment=True 로 하면 파일 다운로드 창을 띄움
     #   저장할 파일명은 download_name=origin_name 로 지정
+
+@app.route('/filesboard/delete/<int:post_id>')
+def filesboard_delete(post_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    # 삭제 전 작성자 확인을 위해 정보 조회
+    post, _ = PostService.get_post_detail(post_id)
+    # _은 리턴값을 사용하지 않겠다 라는 관례적인 표현 (_) 사용하지 않는 변수
+
+    if not post:
+        return "<script>alert('이미 삭제된 게시글입니다.'); location.href='/filesboard';</script>"
+
+    # 본인 확인 (또는 관리자 권한)
+    if post['member_id'] != session['user_id'] and session.get('user_role') != 'admin':
+        return "<script>alert('삭제 권한이 없습니다.'); history.back();</script>"
+
+    if PostService.delete_post(post_id):
+        return "<script>alert('성공적으로 삭제되었습니다.'); location.href='/filesboard';</script>"
+    else:
+        return "<script>alert('삭제 중 오류가 발생했습니다.'); history.back();</script>"
+
+
+# 다중파일 수정용
+@app.route('/filesboard/edit/<int:post_id>', methods=['GET', 'POST'])
+def filesboard_edit(post_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        files = request.files.getlist('files')  # 다중 파일 가져오기
+
+        if PostService.update_post(post_id, title, content, files):
+            return f"<script>alert('수정되었습니다.'); location.href='/filesboard/view/{post_id}';</script>"
+        return "<script>alert('수정 실패'); history.back();</script>"
+
+    # GET 요청 시 기존 데이터 로드
+    post, files = PostService.get_post_detail(post_id)
+    if post['member_id'] != session['user_id']:
+        return "<script>alert('권한이 없습니다.'); history.back();</script>"
+
+    return render_template('filesboard_edit.html', post=post, files=files)
 
 
 ###################################### 파일upload 게시판 end ################################################
